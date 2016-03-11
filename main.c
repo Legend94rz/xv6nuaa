@@ -22,7 +22,7 @@ int main(void)
 	lapicinit();
 	seginit(); // set up segments
 	
-	cprintf("\n OS Lab 161330214\n");	
+	cprintf("\n OS Lab 161330214\n");
 	
 	cprintf("\ncpu%d: starting xv6\n\n", cpu->id);
 	picinit();	 // interrupt controller
