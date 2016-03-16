@@ -155,7 +155,6 @@ mkfs: mkfs.c fs.h
 UPROGS=\
 	_cat\
 	_echo\
-	_print14\
 	_grep\
 	_init\
 	_kill\
@@ -168,7 +167,8 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	
+	_print14\
+	_shutdown14\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -209,7 +209,6 @@ ifndef CPUS
 CPUS := 1
 endif
 QEMUOPTS = -hdb fs.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
-QEMUOPTS += -L /home/xzhu/qemu/pc-bios
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)
@@ -238,12 +237,13 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 # check in that version.
 
 EXTRA=\
-	mkfs.c ulib.c user.h cat.c echo.c print14.c grep.c kill.c\
+	mkfs.c ulib.c user.h cat.c echo.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
-
+	print14.c shutdown14.c\
+	
 dist:
 	rm -rf dist
 	mkdir dist

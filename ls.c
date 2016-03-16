@@ -40,7 +40,6 @@ void ls(char *path)
 		close(fd);
 		return;
 	}
-	printf(1, "File Type: %d\n", st.type);
 	switch (st.type)
 	{
 	case T_FILE:
