@@ -169,6 +169,7 @@ UPROGS=\
 	_zombie\
 	_print14\
 	_shutdown14\
+	_forktest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -243,6 +244,7 @@ EXTRA=\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 	print14.c shutdown14.c\
+	forktest.c\
 	
 dist:
 	rm -rf dist

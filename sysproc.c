@@ -89,3 +89,12 @@ int sys_shutdown(void)
 	outw(0xB004, 0x0|0x2000);
 	return 0;
 }
+
+int sys_forkwinner(void)
+{
+	int b;
+	argint(0,&b);
+	//cprintf("for test: %d %d\n",(int)(cpu->id),b);
+	useCustomScheduleAlgorithm = b;
+	return 0;
+}

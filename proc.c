@@ -164,7 +164,8 @@ int fork(void)
 	acquire(&ptable.lock);
 	np->state = RUNNABLE;
 	release(&ptable.lock);
-
+	if(useCustomScheduleAlgorithm!=0)
+		yield();
 	return pid;
 }
 
