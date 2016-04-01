@@ -170,6 +170,7 @@ UPROGS=\
 	_print14\
 	_shutdown14\
 	_forktest\
+	_termtest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
