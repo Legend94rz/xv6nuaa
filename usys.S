@@ -29,3 +29,7 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
+SYSCALL(alloc_sem);
+SYSCALL(wait_sem);
+SYSCALL(signal_sem);
+SYSCALL(dealloc_sem);

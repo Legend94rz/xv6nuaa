@@ -22,3 +22,7 @@
 #define SYS_close  21
 #define SYS_shutdown 22
 #define SYS_forkwinner 23
+#define SYS_alloc_sem 	24
+#define SYS_wait_sem 	25
+#define SYS_signal_sem 	26
+#define SYS_dealloc_sem 27

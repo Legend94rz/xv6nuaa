@@ -95,6 +95,10 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_shutdown(void);
 extern int sys_forkwinner(void);
+extern int sys_alloc_sem(void);
+extern int sys_wait_sem(void);
+extern int sys_signal_sem(void);
+extern int sys_dealloc_sem(void);
 
 static int (*syscalls[])(void) =
 {
@@ -105,7 +109,8 @@ static int (*syscalls[])(void) =
 	[SYS_sleep] sys_sleep,	[SYS_uptime] sys_uptime,[SYS_open] sys_open,
 	[SYS_write] sys_write,	[SYS_mknod] sys_mknod,	[SYS_unlink] sys_unlink,
 	[SYS_link] sys_link,	[SYS_mkdir] sys_mkdir,	[SYS_close] sys_close,
-	[SYS_shutdown] sys_shutdown,[SYS_forkwinner]sys_forkwinner
+	[SYS_shutdown] sys_shutdown,[SYS_forkwinner]sys_forkwinner,
+	[SYS_alloc_sem] sys_alloc_sem,	[SYS_wait_sem]sys_wait_sem,	[SYS_signal_sem]sys_signal_sem,	[SYS_dealloc_sem]sys_dealloc_sem
 };
 
 void syscall(void)

@@ -86,15 +86,53 @@ int sys_uptime(void)
 
 int sys_shutdown(void)
 {
-	outw(0xB004, 0x0|0x2000);
+	outw(0xB004, 0x0 | 0x2000);
 	return 0;
 }
 
 int sys_forkwinner(void)
 {
 	int b;
-	argint(0,&b);
-	//cprintf("for test: %d %d\n",(int)(cpu->id),b);
+	argint(0, &b);
+	// cprintf("for test: %d %d\n",(int)(cpu->id),b);
 	useCustomScheduleAlgorithm = b;
 	return 0;
+}
+
+int sys_alloc_sem(void)
+{
+	int v;
+	if (argint(0, &v) < 0)
+		return -1;
+	return alloc_sem(v);
+}
+
+int sys_wait_sem(void)
+{
+	int i;
+	if (argint(0, &i) < 0)
+		return -1;
+	if (i >= 100 || i < 0)
+		return -1;	
+	return wait_sem(i);
+}
+
+int sys_signal_sem(void)
+{
+	int i;
+	if (argint(0, &i) < 0)
+		return -1;
+	if (i >= 100 || i < 0)
+		return -1;
+	return signal_sem(i);
+}
+
+int sys_dealloc_sem(void)
+{
+	int i;
+	if (argint(0, &i) < 0)
+		return -1;
+	if (i >= 100 || i < 0)
+		return -1;
+	return dealloc_sem(i);
 }
