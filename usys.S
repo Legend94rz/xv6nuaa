@@ -33,3 +33,5 @@ SYSCALL(alloc_sem);
 SYSCALL(wait_sem);
 SYSCALL(signal_sem);
 SYSCALL(dealloc_sem);
+SYSCALL(enable_schedule_display);
+SYSCALL(set_priority);

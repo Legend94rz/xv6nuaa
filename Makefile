@@ -173,6 +173,7 @@ UPROGS=\
 	_termtest\
 	_semtest\
 	_mysemtest\
+	_schedtest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)

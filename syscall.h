@@ -26,3 +26,5 @@
 #define SYS_wait_sem 	25
 #define SYS_signal_sem 	26
 #define SYS_dealloc_sem 27
+#define SYS_enable_schedule_display 28
+#define SYS_set_priority 29

@@ -136,3 +136,22 @@ int sys_dealloc_sem(void)
 		return -1;
 	return dealloc_sem(i);
 }
+
+int sys_enable_schedule_display(void)
+{
+	int e;
+	if(argint(0,&e)<0)
+		return -1;
+	display_enabled = e;
+	return 0;
+}
+
+int sys_set_priority(void)
+{
+	int pid,prior;
+	if(argint(0,&pid)<0)
+		return -1;
+	if(argint(1,&prior)<0)
+		return -1;
+	return set_priority(pid,prior);
+}

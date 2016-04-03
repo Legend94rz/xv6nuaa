@@ -122,6 +122,7 @@ int				alloc_sem(int);
 int				wait_sem(int);
 int				signal_sem(int);
 int				dealloc_sem(int);
+int				set_priority(int,int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -22,21 +22,24 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-struct proclist{
-	struct proc* proc;
-	struct proclist* next;
+struct proclist
+{
+	struct proc *proc;
+	struct proclist *next;
 };
 #define TOTAL_SEM 100
-struct semaphore{
-	struct proclist* p;
+struct semaphore
+{
+	struct proclist *p;
 	int count;
 	int used;
 	struct spinlock lock;
 };
-struct semaphoreTable{
+struct semaphoreTable
+{
 	struct semaphore sem[100];
 	struct spinlock lock;
-}semTable;
+} semTable;
 
 void pinit(void)
 {
@@ -63,6 +66,7 @@ static struct proc *allocproc(void)
 found:
 	p->state = EMBRYO;
 	p->pid = nextpid++;
+	p->prior = 2;
 	release(&ptable.lock);
 
 	// Allocate kernel stack.
@@ -290,7 +294,7 @@ int wait(void)
 void scheduler(void)
 {
 	struct proc *p;
-
+	struct proc *q;
 	for (;;)
 	{
 		// Enable interrupts on this processor.
@@ -302,7 +306,12 @@ void scheduler(void)
 		{
 			if (p->state != RUNNABLE)
 				continue;
-
+			for (q = ptable.proc; q < &ptable.proc[NPROC]; q++)
+			{
+				if (q->prior > p->prior && q->state == RUNNABLE)
+					p = q;
+			}
+			
 			// Switch to chosen process.  It is the process's job
 			// to release ptable.lock and then reacquire it
 			// before jumping back to us.
@@ -311,7 +320,7 @@ void scheduler(void)
 			p->state = RUNNING;
 			swtch(&cpu->scheduler, proc->context);
 			switchkvm();
-
+			
 			// Process is done running for now.
 			// It should have changed its p->state before coming back.
 			proc = 0;
@@ -334,6 +343,8 @@ void sched(void)
 		panic("sched running");
 	if (readeflags() & FL_IF)
 		panic("sched interruptible");
+	if (display_enabled)
+		cprintf("%d - ", proc->pid);
 	intena = cpu->intena;
 	swtch(&proc->context, cpu->scheduler);
 	cpu->intena = intena;
@@ -514,10 +525,10 @@ int wait_sem(int i)
 		p->proc = proc;
 		p->next = semTable.sem[i].p;
 		semTable.sem[i].p = p;
-		
+
 		acquire(&ptable.lock);
 		release(&semTable.sem[i].lock);
-		proc->state=SLEEPING;
+		proc->state = SLEEPING;
 		sched();
 		release(&ptable.lock);
 		acquire(&semTable.sem[i].lock);
@@ -557,10 +568,26 @@ int dealloc_sem(int i)
 	{
 		kill(p->proc->pid);
 		struct proclist *next = p->next;
-		kfree((char*)p);
+		kfree((char *)p);
 		p = next;
 	}
 	semTable.sem[i].p = 0;
 	release(&semTable.lock);
 	return 1;
+}
+int set_priority(int pid, int prior)
+{
+	acquire(&ptable.lock);
+	struct proc *p;
+	for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+	{
+		if (p->pid == pid)
+		{
+			p->prior = prior;
+			release(&ptable.lock);
+			return 0;
+		}
+	}
+	release(&ptable.lock);
+	return -1;
 }
