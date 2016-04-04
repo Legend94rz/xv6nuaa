@@ -30,14 +30,14 @@ struct proclist
 #define TOTAL_SEM 100
 struct semaphore
 {
-	struct proclist *p;
+	struct proclist *head, *tail;
 	int count;
 	int used;
 	struct spinlock lock;
 };
 struct semaphoreTable
 {
-	struct semaphore sem[100];
+	struct semaphore sem[TOTAL_SEM];
 	struct spinlock lock;
 } semTable;
 
@@ -311,7 +311,7 @@ void scheduler(void)
 				if (q->prior > p->prior && q->state == RUNNABLE)
 					p = q;
 			}
-			
+
 			// Switch to chosen process.  It is the process's job
 			// to release ptable.lock and then reacquire it
 			// before jumping back to us.
@@ -320,7 +320,7 @@ void scheduler(void)
 			p->state = RUNNING;
 			swtch(&cpu->scheduler, proc->context);
 			switchkvm();
-			
+
 			// Process is done running for now.
 			// It should have changed its p->state before coming back.
 			proc = 0;
@@ -504,7 +504,8 @@ int alloc_sem(int v)
 		{
 			semTable.sem[i].count = v;
 			semTable.sem[i].used = 1;
-			semTable.sem[i].p = 0;
+			semTable.sem[i].head = 0;
+			semTable.sem[i].tail = 0;
 			release(&semTable.lock);
 			return i;
 		}
@@ -520,12 +521,14 @@ int wait_sem(int i)
 	semTable.sem[i].count--;
 	if (semTable.sem[i].count < 0)
 	{
-		// note: for easier, here is a reversed link tabel:
 		struct proclist *p = (struct proclist *)kalloc();
 		p->proc = proc;
-		p->next = semTable.sem[i].p;
-		semTable.sem[i].p = p;
-
+		p->next = 0;
+		if (semTable.sem[i].tail != 0)
+			semTable.sem[i].tail->next = p;
+		if (semTable.sem[i].head == 0)
+			semTable.sem[i].head = p;
+		semTable.sem[i].tail = p;
 		acquire(&ptable.lock);
 		release(&semTable.sem[i].lock);
 		proc->state = SLEEPING;
@@ -544,12 +547,12 @@ int signal_sem(int i)
 	semTable.sem[i].count++;
 	if (semTable.sem[i].count <= 0)
 	{
-		struct proclist *p = semTable.sem[i].p;
+		struct proclist *p = semTable.sem[i].head;
 		acquire(&ptable.lock);
 		p->proc->state = RUNNABLE;
 		release(&ptable.lock);
 
-		semTable.sem[i].p = p->next;
+		semTable.sem[i].head = p->next;
 		kfree((char *)p);
 	}
 
@@ -563,7 +566,7 @@ int dealloc_sem(int i)
 	acquire(&semTable.lock);
 	semTable.sem[i].used = 0;
 	semTable.sem[i].count = 0;
-	struct proclist *p = semTable.sem[i].p;
+	struct proclist *p = semTable.sem[i].head;
 	while (p != 0)
 	{
 		kill(p->proc->pid);
@@ -571,7 +574,7 @@ int dealloc_sem(int i)
 		kfree((char *)p);
 		p = next;
 	}
-	semTable.sem[i].p = 0;
+	semTable.sem[i].head = 0;
 	release(&semTable.lock);
 	return 1;
 }
