@@ -306,10 +306,16 @@ void scheduler(void)
 		{
 			if (p->state != RUNNABLE)
 				continue;
-			for (q = ptable.proc; q < &ptable.proc[NPROC]; q++)
+			q = p + 1;
+			if (q >= &ptable.proc[NPROC])
+				q = ptable.proc;
+			while (q != p)
 			{
 				if (q->prior > p->prior && q->state == RUNNABLE)
 					p = q;
+				q++;
+				if (q >= &ptable.proc[NPROC])
+					q = ptable.proc;
 			}
 
 			// Switch to chosen process.  It is the process's job
