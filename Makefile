@@ -134,7 +134,7 @@ tags: $(OBJS) entryother.S _init
 vectors.S: vectors.pl
 	perl vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o
+ULIB = ulib.o usys.o printf.o umalloc.o xthread.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -167,13 +167,7 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_print14\
-	_shutdown14\
-	_forktest\
-	_termtest\
-	_semtest\
-	_mysemtest\
-	_schedtest\
+	
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -214,6 +208,7 @@ ifndef CPUS
 CPUS := 1
 endif
 QEMUOPTS = -hdb fs.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
+QEMUOPTS += -L /home/xzhu/qemu/pc-bios
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)
@@ -247,9 +242,7 @@ EXTRA=\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
-	print14.c shutdown14.c\
-	forktest.c\
-	
+
 dist:
 	rm -rf dist
 	mkdir dist
