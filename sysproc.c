@@ -90,4 +90,41 @@ sys_uptime(void)
   return xticks;
 }
 
+int sys_clone(void)
+{
+	int a1,a2,a3;
+	if(argint(0,&a1)<0)
+		return -1;
+	if(argint(1,&a2)<0)
+		return -1;
+	if(argint(2,&a3)<0)
+		return -1;
+	pThreadFunc fn=(pThreadFunc)a1;
+	void* stack=(void*)a2;
+	void* args=(void*)a3;
+	return clone(fn,stack,args);
+}
 
+int sys_join(void)
+{
+	int tid,a2,a3;
+	if(argint(0,&tid)<0)
+		return -1;
+	if(argint(1,&a2)<0)
+		return -1;
+	if(argint(2,&a3)<0)
+		return -1;
+	void** ret_p=(void**)a2;
+	void** stack=(void**)a3;
+	join(tid,ret_p,stack);
+	return 0;
+}
+
+int sys_thread_exit(void)
+{
+	int a1;
+	if(argint(0,&a1)<0)
+		return -1;
+	thread_exit((void*)a1);
+	return 0;
+}

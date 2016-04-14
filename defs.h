@@ -8,6 +8,7 @@ struct rtcdate;
 struct spinlock;
 struct stat;
 struct superblock;
+typedef void* (*pThreadFunc)(void*);
 
 // bio.c
 void            binit(void);
@@ -118,6 +119,9 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int				clone(pThreadFunc fn, void* stack, void* args);
+void			join(int, void**, void**);
+void			thread_exit(void*);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
