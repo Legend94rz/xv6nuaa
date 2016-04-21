@@ -30,8 +30,6 @@ extern int ncpu;
 extern struct cpu *cpu asm("%gs:0");       // &cpus[cpunum()]
 extern struct proc *proc asm("%gs:4");     // cpus[cpunum()].proc
 
-int useCustomScheduleAlgorithm;
-
 //PAGEBREAK: 17
 // Saved registers for kernel context switches.
 // Don't need to save all the segment registers (%cs, etc),
@@ -68,9 +66,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  int prior;
 };
-int display_enabled;
+
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss

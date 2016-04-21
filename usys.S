@@ -29,9 +29,5 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
-SYSCALL(alloc_sem);
-SYSCALL(wait_sem);
-SYSCALL(signal_sem);
-SYSCALL(dealloc_sem);
-SYSCALL(enable_schedule_display);
-SYSCALL(set_priority);
+SYSCALL(shutdown)
+SYSCALL(print_free_frame_cnt)
