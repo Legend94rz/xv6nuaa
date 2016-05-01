@@ -7,6 +7,7 @@
 #include "x86.h"
 #include "traps.h"
 #include "spinlock.h"
+extern int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
 
 // Interrupt descriptor table (shared by all CPUs).
 struct gatedesc idt[256];
@@ -86,12 +87,22 @@ trap(struct trapframe *tf)
               tf->trapno, cpu->id, tf->eip, rcr2());
       panic("trap");
     }
-    // In user space, assume process misbehaved.
-    cprintf("pid %d %s: trap %d err %d on cpu %d "
+	if(enableLazyAlloc && tf->trapno==T_PGFLT && tf->err==(int)(PTE_U|PTE_W) && rcr2()<=proc->sz)
+	{
+      char *mem;
+  	  mem = kalloc();
+      memset(mem, 0, PGSIZE);
+      mappages(proc->pgdir, (char*)PGROUNDDOWN(rcr2()), PGSIZE, v2p(mem), PTE_W|PTE_U);
+	}
+	else
+	{
+      // In user space, assume process misbehaved.
+      cprintf("pid %d %s: trap %d err %d on cpu %d "
             "eip 0x%x addr 0x%x--kill proc\n",
             proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip, 
             rcr2());
-    proc->killed = 1;
+      proc->killed = 1;
+	}
   }
 
   // Force process exit if it has been killed and is in user space.

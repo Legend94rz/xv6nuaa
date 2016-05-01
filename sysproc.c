@@ -101,3 +101,11 @@ int sys_print_free_frame_cnt(void)
     cprintf("free-frames %d\n", free_frame_cnt);
     return 0;
 }
+int sys_set_page_allocator(void)
+{
+	int a;
+	if(argint(0,&a)<0)
+		return -1;
+	enableLazyAlloc = a;
+	return 0;
+}
