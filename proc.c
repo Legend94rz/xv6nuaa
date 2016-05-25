@@ -112,16 +112,10 @@ growproc(int n)
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
-    {
-      cprintf("Allocating pages failed!\n"); // CS550: for mem proj
-  	  return -1;
-    }
+      return -1;
   } else if(n < 0){
     if((sz = deallocuvm(proc->pgdir, sz, sz + n)) == 0)
-    {
-      cprintf("Deallocating pages failed!\n"); // CS550: for mem proj
       return -1;
-    }
   }
   proc->sz = sz;
   switchuvm(proc);

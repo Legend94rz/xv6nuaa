@@ -22,9 +22,6 @@ struct {
   struct run *freelist;
 } kmem;
 
-int free_frame_cnt = 0; // NUAA OS: for mem proj 
-
-
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just
 // the pages mapped by entrypgdir on free list.
@@ -75,7 +72,6 @@ kfree(char *v)
   r = (struct run*)v;
   r->next = kmem.freelist;
   kmem.freelist = r;
-  free_frame_cnt++; // NUAA OS:  for mem project
   if(kmem.use_lock)
     release(&kmem.lock);
 }
@@ -92,10 +88,7 @@ kalloc(void)
     acquire(&kmem.lock);
   r = kmem.freelist;
   if(r)
-  {
     kmem.freelist = r->next;
-    free_frame_cnt--; // NUAA OS: for mem project
-  }
   if(kmem.use_lock)
     release(&kmem.lock);
   return (char*)r;

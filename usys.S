@@ -29,6 +29,5 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
+
 SYSCALL(shutdown)
-SYSCALL(print_free_frame_cnt)
-SYSCALL(set_page_allocator);

@@ -23,7 +23,6 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-void set_page_allocator(int);
 
 // ulib.c
 int stat(char*, struct stat*);
@@ -38,5 +37,5 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+
 void shutdown(void);
-void print_free_frame_cnt(void);

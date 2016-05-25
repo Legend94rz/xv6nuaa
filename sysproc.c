@@ -7,7 +7,6 @@
 #include "mmu.h"
 #include "proc.h"
 
-extern int free_frame_cnt; // NUAA OS: for mem proj
 int
 sys_fork(void)
 {
@@ -90,22 +89,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
 int sys_shutdown(void)
 {
   outw(0xB004, 0x0|0x2000);
 
   return 0;
-}
-int sys_print_free_frame_cnt(void)
-{
-    cprintf("free-frames %d\n", free_frame_cnt);
-    return 0;
-}
-int sys_set_page_allocator(void)
-{
-	int a;
-	if(argint(0,&a)<0)
-		return -1;
-	enableLazyAlloc = a;
-	return 0;
 }
