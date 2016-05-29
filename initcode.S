@@ -7,6 +7,8 @@
 # exec(init, argv)
 .globl start
 start:
+  movl $SYS_fsck, %eax
+  int $T_SYSCALL
   pushl $argv
   pushl $init
   pushl $0  // where caller pc would be
