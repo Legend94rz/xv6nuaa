@@ -208,10 +208,8 @@ ifndef CPUS
 #CPUS := 2
 CPUS := 1
 endif
-//QEMUOPTS = -hdb fs.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
+QEMUOPTS = -hdb fs.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
 
-
-QEMUOPTS = -hdb fs-proj5.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
 QEMUOPTS += -L /home/xzhu/qemu/pc-bios
 
 qemu: fs.img xv6.img

@@ -31,4 +31,3 @@ SYSCALL(sleep)
 SYSCALL(uptime)
 
 SYSCALL(shutdown)
-SYSCALL(fsck);
