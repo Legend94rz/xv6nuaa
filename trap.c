@@ -108,4 +108,18 @@ trap(struct trapframe *tf)
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();
+
+  if(proc && (tf->cs&3) && tf->trapno == T_IRQ0+IRQ_TIMER)
+  {
+	  proc->ticks++;
+	  if(proc->ticks==proc->interval)
+	  {
+		  proc->ticks = 0;
+		  uint sp = tf->esp;
+		  sp-=4;
+		  *(uint*)sp=tf->eip;
+		  tf->esp=sp;
+		  tf->eip = (uint)proc->fn;
+	  }
+  }
 }

@@ -96,3 +96,15 @@ int sys_shutdown(void)
 
   return 0;
 }
+int sys_alarm()
+{
+	int a,b;
+	if(argint(0,&a)<0)
+		return -1;
+	if(argint(1,&b)<0)
+		return -1;
+	proc->ticks=0;
+	proc->interval = a;
+	proc->fn = (aFunc)b;
+	return 0;
+}

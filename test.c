@@ -2,6 +2,13 @@
 #include "stat.h"
 #include "user.h"
 
+extern void alarm(int,void(*)());
+
+void periodic()
+{
+	printf(1,"alarm!\n");
+}
+
 int main(int argc, char *argv[])
 {
   int i;
